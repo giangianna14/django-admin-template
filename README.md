@@ -82,7 +82,7 @@ Untuk testing, sudah tersedia akun superuser:
 - `/accounts/login/` - Halaman login (allauth)
 - `/accounts/signup/` - Halaman register (allauth)
 - `/accounts/password/reset/` - Reset password (allauth)
-- `/accounts/google/login/` - Google OAuth2 login
+- `/accounts/google/login/` - Google OAuth2 login (direct URL)
 - `/logout/` - Logout (redirect ke login)
 
 ### Dashboard
