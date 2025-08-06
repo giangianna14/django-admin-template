@@ -1,5 +1,8 @@
-from django.shortcuts import HttpResponse
-from django.shortcuts import render 
+from django.shortcuts import HttpResponse, render, redirect
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm
 
 def home(request):
     return render(request, 'home.html', {})
@@ -17,14 +20,51 @@ def contact(request):
     return render(request, 'contact.html', {})
 
 def login(request):
-    return render(request, 'login.html', {})
+    error = None
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                return redirect('dashboard')
+            else:
+                error = 'Username atau password salah.'
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form, 'error': error})
 
 def register(request):
-    return render(request, 'register.html', {})
+    error = None
+    success = None
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            success = f'Akun untuk {username} berhasil dibuat! Silakan login.'
+            return redirect('login')
+        else:
+            error = 'Ada kesalahan dalam form. Silakan periksa kembali.'
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form, 'error': error, 'success': success})
 
 def forget_password(request):
-    return render(request, 'forget-password.html', {})
+    message = None
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            # Di sini Anda bisa menambahkan logika untuk mengirim email reset password
+            message = f'Link reset password telah dikirim ke {email}'
+    else:
+        form = ForgotPasswordForm()
+    return render(request, 'forget-password.html', {'form': form, 'message': message})
 
+@login_required
 def dashboard(request):
     return render(request, 'ecommerce.html', {})
 
@@ -446,7 +486,9 @@ def lock_screen(request):
     return render(request, 'lock-screen.html', {})
 
 def logout(request):
-    return render(request, 'logout.html', {})
+    auth_logout(request)
+    messages.success(request, 'Anda berhasil logout.')
+    return redirect('login')
 
 def confirm_mail(request):
     return render(request, 'confirm-mail.html', {})

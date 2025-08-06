@@ -70,40 +70,87 @@
 								</a>
 							</div>
 						</div>
-						<form>
+						<form method="post">
+							{% csrf_token %}
 							<div class="form-group mb-3">
-								<label class="label text-secondary"
-									>Full Name</label
-								>
+								<label class="label text-secondary" for="id_first_name">First Name</label>
 								<input
 									type="text"
+									name="first_name"
 									class="form-control"
-									placeholder="Enter your full name"
+									id="id_first_name"
+									placeholder="Enter your first name"
+									required
 								/>
 							</div>
 							<div class="form-group mb-3">
-								<label class="label text-secondary"
-									>Email Address</label
-								>
+								<label class="label text-secondary" for="id_last_name">Last Name</label>
+								<input
+									type="text"
+									name="last_name"
+									class="form-control"
+									id="id_last_name"
+									placeholder="Enter your last name"
+									required
+								/>
+							</div>
+							<div class="form-group mb-3">
+								<label class="label text-secondary" for="id_username">Username</label>
+								<input
+									type="text"
+									name="username"
+									class="form-control"
+									id="id_username"
+									placeholder="Enter your username"
+									required
+								/>
+							</div>
+							<div class="form-group mb-3">
+								<label class="label text-secondary" for="id_email">Email Address</label>
 								<input
 									type="email"
+									name="email"
 									class="form-control"
+									id="id_email"
 									placeholder="example@trezo.com"
+									required
 								/>
 							</div>
 							<div class="form-group mb-3">
-								<label class="label text-secondary"
-									>Password</label
-								>
+								<label class="label text-secondary" for="id_password1">Password</label>
 								<input
 									type="password"
+									name="password1"
 									class="form-control"
+									id="id_password1"
 									placeholder="Type password"
+									required
 								/>
 							</div>
 							<div class="form-group mb-3">
-								<a
-									href="/profile"
+								<label class="label text-secondary" for="id_password2">Confirm Password</label>
+								<input
+									type="password"
+									name="password2"
+									class="form-control"
+									id="id_password2"
+									placeholder="Confirm password"
+									required
+								/>
+							</div>
+							{% if error %}
+							<div class="alert alert-danger mb-3">
+								{{ error }}
+							</div>
+							{% endif %}
+							{% if success %}
+							<div class="alert alert-success mb-3">
+								{{ success }}
+							</div>
+							{% endif %}
+							<div class="form-group mb-3">
+								<button
+									type="submit"
 									class="btn btn-primary fw-medium py-2 px-3 w-100"
 								>
 									<div
@@ -115,7 +162,7 @@
 										>
 										<span>Register</span>
 									</div>
-								</a>
+								</button>
 							</div>
 							<div class="form-group">
 								<p>
