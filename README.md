@@ -6,7 +6,9 @@ Template ini adalah starter project Django dengan integrasi Bootstrap, cocok unt
 
 ✅ **Sistem Autentikasi Lengkap**
 - Login dengan username/password
+- **Login dengan Google OAuth2** 🆕
 - Register akun baru
+- **Register dengan Google OAuth2** 🆕
 - Forgot Password
 - Logout
 - Proteksi halaman dengan login required
@@ -15,6 +17,7 @@ Template ini adalah starter project Django dengan integrasi Bootstrap, cocok unt
 - Bootstrap 5 integration
 - Design modern dan responsive
 - Template untuk berbagai halaman
+- Custom allauth templates yang sesuai dengan design
 
 ## Instalasi
 
@@ -35,7 +38,7 @@ Template ini adalah starter project Django dengan integrasi Bootstrap, cocok unt
 3. **Install dependencies**
 
    ```bash
-   pip install django
+   pip install django django-allauth
    ```
 
 4. **Migrasi database**
@@ -56,7 +59,13 @@ Template ini adalah starter project Django dengan integrasi Bootstrap, cocok unt
    python3 manage.py runserver
    ```
 
-7. **Akses aplikasi**
+7. **Setup Google OAuth2 (Opsional)**
+
+   ```bash
+   python3 setup_google_oauth.py
+   ```
+
+8. **Akses aplikasi**
 
    Buka browser dan akses `http://localhost:8000`
 
@@ -69,9 +78,11 @@ Untuk testing, sudah tersedia akun superuser:
 ## Endpoints
 
 ### Autentikasi
-- `/login/` - Halaman login
-- `/register/` - Halaman register
-- `/forget-password/` - Halaman forgot password
+- `/login/` - Halaman login (custom)
+- `/accounts/login/` - Halaman login (allauth)
+- `/accounts/signup/` - Halaman register (allauth)
+- `/accounts/password/reset/` - Reset password (allauth)
+- `/accounts/google/login/` - Google OAuth2 login
 - `/logout/` - Logout (redirect ke login)
 
 ### Dashboard
@@ -92,19 +103,57 @@ Untuk testing, sudah tersedia akun superuser:
   - `register.html` : Template register
   - `forget-password.html` : Template forgot password
 
+## Google OAuth2 Setup
+
+### 1. Buat Google OAuth2 Credentials
+
+1. Buka [Google Cloud Console](https://console.cloud.google.com/)
+2. Buat project baru atau pilih project yang sudah ada
+3. Enable **Google+ API** atau **Google Identity API**
+4. Buat **OAuth 2.0 Client ID** credentials
+5. Set **Authorized redirect URI**: `http://127.0.0.1:8000/accounts/google/login/callback/`
+6. Copy **Client ID** dan **Client Secret**
+
+### 2. Konfigurasi di Django
+
+1. Jalankan script setup:
+   ```bash
+   python3 setup_google_oauth.py
+   ```
+
+2. Atau setup manual via Django Admin:
+   - Akses `/admin/`
+   - Login sebagai superuser
+   - Buka **Social Applications**
+   - Tambah aplikasi baru:
+     - Provider: **Google**
+     - Name: **Google OAuth2**
+     - Client id: `your-client-id`
+     - Secret key: `your-client-secret`
+     - Sites: **127.0.0.1:8000**
+
+### 3. Testing
+
+1. Akses `/accounts/login/` atau `/accounts/signup/`
+2. Klik tombol Google
+3. Login dengan akun Google
+4. Akan redirect ke dashboard setelah berhasil
+
 ## Penggunaan
 
 ### Login
-1. Akses `/login/`
-2. Masukkan username dan password
-3. Klik "Login"
-4. Jika berhasil, redirect ke dashboard
+1. **Regular Login**: Akses `/login/` atau `/accounts/login/`
+2. **Google OAuth2**: Klik tombol Google di halaman login
+3. Masukkan username dan password (untuk regular login)
+4. Klik "Login"
+5. Jika berhasil, redirect ke dashboard
 
 ### Register
-1. Akses `/register/`
-2. Isi form: First Name, Last Name, Username, Email, Password, Confirm Password
-3. Klik "Register"
-4. Jika berhasil, redirect ke login
+1. **Regular Register**: Akses `/register/` atau `/accounts/signup/`
+2. **Google OAuth2**: Klik tombol Google di halaman register
+3. Isi form: Username, Email, Password, Confirm Password (untuk regular register)
+4. Klik "Register"
+5. Jika berhasil, redirect ke login
 
 ### Forgot Password
 1. Akses `/forget-password/`

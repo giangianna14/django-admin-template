@@ -1,4 +1,5 @@
-{% extends 'layout/auth_base.html' %} {% block content %}
+{% extends 'layout/auth_base.html' %}
+{% block content %}
 <!-- Start Main Content Area -->
 <div class="container">
 	<div class="main-content d-flex flex-column p-0">
@@ -6,9 +7,9 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6 d-none d-lg-block">
 					<img
-						src="/static/images/login.jpg"
+						src="/static/images/register.jpg"
 						class="rounded-3"
-						alt="login"
+						alt="register"
 					/>
 				</div>
 				<div class="col-lg-6">
@@ -25,9 +26,9 @@
 								alt="login"
 							/>
 						</div>
-						<h3 class="fs-28 mb-2">Welcome back to GibtekApps!</h3>
+						<h3 class="fs-28 mb-2">Register to GibtekApps</h3>
 						<p class="fw-medium fs-16 mb-4">
-							Sign In with social account or enter your details
+							Register with social account or enter your details
 						</p>
 						<div class="row justify-content-center">
 							<div class="col-lg-4 col-sm-4">
@@ -73,46 +74,41 @@
 							{% csrf_token %}
 							{% if messages %}
 								{% for message in messages %}
-									<div class="alert alert-{{ message.tags }} mb-4">
+									<div class="alert alert-{{ message.tags }} mb-3">
 										{{ message }}
 									</div>
 								{% endfor %}
 							{% endif %}
-							<div class="form-group mb-4">
-								<label class="label text-secondary" for="id_username">Username</label>
-								<input
-									type="text"
-									name="username"
-									class="form-control h-55"
-									id="id_username"
-									placeholder="Enter your username"
-									required
-								/>
+							{{ form.non_field_errors }}
+							<div class="form-group mb-3">
+								<label class="label text-secondary" for="{{ form.username.id_for_label }}">Username</label>
+								{{ form.username }}
+								{% if form.username.errors %}
+									<div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+								{% endif %}
 							</div>
-							<div class="form-group mb-4">
-								<label class="label text-secondary" for="id_password">Password</label>
-								<input
-									type="password"
-									name="password"
-									class="form-control h-55"
-									id="id_password"
-									placeholder="Type password"
-									required
-								/>
+							<div class="form-group mb-3">
+								<label class="label text-secondary" for="{{ form.email.id_for_label }}">Email Address</label>
+								{{ form.email }}
+								{% if form.email.errors %}
+									<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+								{% endif %}
 							</div>
-							<div class="form-group mb-4">
-								<a
-									href="/forget-password"
-									class="text-decoration-none text-primary fw-semibold"
-									>Forgot Password?</a
-								>
+							<div class="form-group mb-3">
+								<label class="label text-secondary" for="{{ form.password1.id_for_label }}">Password</label>
+								{{ form.password1 }}
+								{% if form.password1.errors %}
+									<div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+								{% endif %}
 							</div>
-							{% if error %}
-							<div class="alert alert-danger mb-4">
-								{{ error }}
+							<div class="form-group mb-3">
+								<label class="label text-secondary" for="{{ form.password2.id_for_label }}">Confirm Password</label>
+								{{ form.password2 }}
+								{% if form.password2.errors %}
+									<div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+								{% endif %}
 							</div>
-							{% endif %}
-							<div class="form-group mb-4">
+							<div class="form-group mb-3">
 								<button
 									type="submit"
 									class="btn btn-primary fw-medium py-2 px-3 w-100"
@@ -122,19 +118,19 @@
 									>
 										<i
 											class="material-symbols-outlined text-white fs-20 me-2"
-											>login</i
+											>person_4</i
 										>
-										<span>Login</span>
+										<span>Register</span>
 									</div>
 								</button>
 							</div>
 							<div class="form-group">
 								<p>
-									Don’t have an account.
+									Already have an account.
 									<a
-										href="/register"
+										href="{% url 'account_login' %}"
 										class="fw-medium text-primary text-decoration-none"
-										>Register</a
+										>Login</a
 									>
 								</p>
 							</div>
@@ -146,4 +142,22 @@
 	</div>
 </div>
 <!-- End Main Content Area -->
+
+<style>
+/* Custom styling for allauth forms */
+#id_username, #id_email, #id_password1, #id_password2 {
+    height: 45px;
+    border: 1px solid #d6dae1;
+    border-radius: 5px;
+    padding: 0 15px;
+    font-size: 14px;
+    width: 100%;
+}
+
+#id_username:focus, #id_email:focus, #id_password1:focus, #id_password2:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+</style>
 {% endblock %}
