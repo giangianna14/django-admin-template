@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page - Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    <h4>✅ Halaman Profile Telah Diperbarui!</h4>
+                    <p>Halaman profile di <code>http://127.0.0.1:8000/my-profile/</code> sekarang sudah disesuaikan dengan data user yang sebenarnya.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5>🔧 Perubahan yang Telah Dibuat:</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>📋 Data User yang Ditampilkan:</h6>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">✅ Username user yang login</li>
+                                    <li class="list-group-item">✅ Email address</li>
+                                    <li class="list-group-item">✅ Nama lengkap (jika ada)</li>
+                                    <li class="list-group-item">✅ User ID</li>
+                                    <li class="list-group-item">✅ Tanggal bergabung</li>
+                                    <li class="list-group-item">✅ Tanggal login terakhir</li>
+                                    <li class="list-group-item">✅ Status akun (Active/Inactive)</li>
+                                    <li class="list-group-item">✅ Tipe akun (Admin/Staff/User)</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>🔒 Security Features:</h6>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">✅ Login required untuk akses halaman</li>
+                                    <li class="list-group-item">✅ Redirect ke login jika belum login</li>
+                                    <li class="list-group-item">✅ Data real-time dari database</li>
+                                    <li class="list-group-item">✅ Template dinamis dengan context</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>🚀 Cara Mengakses:</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol>
+                            <li><strong>Login terlebih dahulu</strong> di <a href="http://127.0.0.1:8000/login/" target="_blank">http://127.0.0.1:8000/login/</a></li>
+                            <li><strong>Akses halaman profile</strong> di <a href="http://127.0.0.1:8000/my-profile/" target="_blank">http://127.0.0.1:8000/my-profile/</a></li>
+                            <li><strong>Atau daftar user baru</strong> di <a href="http://127.0.0.1:8000/register/" target="_blank">http://127.0.0.1:8000/register/</a></li>
+                        </ol>
+                        
+                        <div class="alert alert-info mt-3">
+                            <strong>💡 Tips:</strong> Jika belum memiliki akun, Anda bisa mendaftar terlebih dahulu. Setelah login, data yang ditampilkan di halaman profile akan sesuai dengan akun yang login.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>📝 Kode yang Dimodifikasi:</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>1. views.py - my_profile function:</h6>
+                        <pre><code>@login_required
+def my_profile(request):
+    context = {
+        'user': request.user,
+    }
+    return render(request, 'my-profile.html', context)</code></pre>
+                        
+                        <h6>2. Template variables yang digunakan:</h6>
+                        <ul>
+                            <li><code>{{ user.username }}</code> - Username</li>
+                            <li><code>{{ user.email }}</code> - Email</li>
+                            <li><code>{{ user.get_full_name }}</code> - Nama lengkap</li>
+                            <li><code>{{ user.date_joined|date:"d M Y" }}</code> - Tanggal bergabung</li>
+                            <li><code>{{ user.last_login|date:"d M Y H:i" }}</code> - Login terakhir</li>
+                            <li><code>{{ user.id }}</code> - User ID</li>
+                            <li><code>{{ user.is_active }}</code> - Status aktif</li>
+                            <li><code>{{ user.is_staff }}</code> - Status staff</li>
+                            <li><code>{{ user.is_superuser }}</code> - Status superuser</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

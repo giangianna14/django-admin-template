@@ -34,7 +34,7 @@
 					<div class="mb-5">
 						<h3 class="text-white fw-semibold">
 							Welcome Back,
-							<span class="text-danger-div">Olivia!</span>
+							<span class="text-danger-div">{{ user.first_name|default:user.username }}!</span>
 						</h3>
 						<p class="text-light">
 							Your progress this week is Awesome.
@@ -185,19 +185,19 @@
 								</div>
 								<div class="flex-grow-1 ms-3">
 									<h4 class="fs-17 mb-1 fw-semibold">
-										Olivia John
+										{{ user.get_full_name|default:user.username }}
 									</h4>
-									<span class="fs-14">Marketing Manager</span>
+									<span class="fs-14">{{ user.email }}</span>
 								</div>
 							</div>
 
 							<h4 class="fw-semibold fs-14 mb-2">About Me</h4>
 							<p>
-								Molestie tincidunt ut consequat a urna tortor.
-								Vitae velit ac nisl velit mauris placerat nisi
-								placerat. Pellentesque viverra lorem malesuada
-								nunc tristique sapien. Imperdiet sit hendrerit
-								tincidunt bibendum donec adipiscing.
+								{% if user.first_name or user.last_name %}
+									Hello! I'm {{ user.get_full_name }}. Welcome to my profile page.
+								{% else %}
+									Welcome to my profile page. Please update your profile information to tell others about yourself.
+								{% endif %}
 							</p>
 							<h4 class="fw-semibold fs-14 mb-2 pb-1">
 								Social Profile
@@ -257,37 +257,37 @@
 								<li class="d-flex align-items-center mb-2 pb-1">
 									<span>User ID:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>7001</span
+										>{{ user.id }}</span
+									>
+								</li>
+								<li class="d-flex align-items-center mb-2 pb-1">
+									<span>Username:</span>
+									<span class="text-secondary fw-medium ms-1"
+										>{{ user.username }}</span
 									>
 								</li>
 								<li class="d-flex align-items-center mb-2 pb-1">
 									<span>Full Name:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>Olivia John</span
+										>{{ user.get_full_name|default:"Not set" }}</span
 									>
 								</li>
 								<li class="d-flex align-items-center mb-2 pb-1">
 									<span>Email:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>olivia@trezo.com</span
+										>{{ user.email }}</span
 									>
 								</li>
 								<li class="d-flex align-items-center mb-2 pb-1">
-									<span>Role:</span>
+									<span>Status:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>Administrator</span
-									>
-								</li>
-								<li class="d-flex align-items-center mb-2 pb-1">
-									<span>Location:</span>
-									<span class="text-secondary fw-medium ms-1"
-										>New York, USA</span
+										>{% if user.is_active %}Active{% else %}Inactive{% endif %}</span
 									>
 								</li>
 								<li class="d-flex align-items-center">
 									<span>Join Date:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>10 May 2022</span
+										>{{ user.date_joined|date:"d M Y" }}</span
 									>
 								</li>
 							</ul>
@@ -300,33 +300,33 @@
 							<h3 class="mb-3 mb-lg-4">Additional Information</h3>
 							<ul class="ps-0 mb-0 list-unstyled">
 								<li class="d-flex align-items-center mb-2 pb-1">
-									<span>Phone:</span>
+									<span>Last Login:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>+1 444 266 5599</span
+										>{{ user.last_login|date:"d M Y H:i"|default:"Never" }}</span
 									>
 								</li>
 								<li class="d-flex align-items-center mb-2 pb-1">
-									<span>Address:</span>
+									<span>Account Type:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>84 S. Arrowhead Court Branford</span
+										>{% if user.is_superuser %}Administrator{% elif user.is_staff %}Staff{% else %}Regular User{% endif %}</span
 									>
 								</li>
 								<li class="d-flex align-items-center mb-2 pb-1">
-									<span>Orders:</span>
+									<span>First Name:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>696</span
+										>{{ user.first_name|default:"Not set" }}</span
 									>
 								</li>
 								<li class="d-flex align-items-center mb-2 pb-1">
-									<span>Products:</span>
+									<span>Last Name:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>9240</span
+										>{{ user.last_name|default:"Not set" }}</span
 									>
 								</li>
 								<li class="d-flex align-items-center mb-2 pb-1">
-									<span>Events:</span>
+									<span>Email Verified:</span>
 									<span class="text-secondary fw-medium ms-1"
-										>5</span
+										>{% if user.email %}Yes{% else %}No{% endif %}</span
 									>
 								</li>
 							</ul>
@@ -809,83 +809,56 @@
 						</div>
 					</div>
 					<div class="position-relative timeline-item">
-						<span class="time-line-date">Just now</span>
+						<span class="time-line-date">{{ user.date_joined|date:"d M Y" }}</span>
 
 						<div class="border-style-for-timeline">
 							<h4 class="fs-14 fw-medium mb-2">
-								Weekly Stand-Up Meetings:
+								Account Created:
 							</h4>
 							<p class="fs-13">
-								We continued our weekly stand-up meetings where
-								team members provided updates on their current
-								tasks, discussed any roadblocks, and coordinated
-								efforts for the week ahead.
+								Welcome to GibtekApps! Your account was successfully created and you joined our community.
 							</p>
 							<p>
 								By:
 								<span class="text-primary"
-									>Olivia Rodriguez</span
+									>System</span
 								>
 							</p>
 						</div>
 					</div>
+					{% if user.last_login %}
 					<div class="position-relative timeline-item">
-						<span class="time-line-date">1 day ago</span>
+						<span class="time-line-date">{{ user.last_login|date:"d M Y" }}</span>
 
 						<div class="border-style-for-timeline dot-2">
 							<h4 class="fs-14 fw-medium mb-2">
-								Project Kickoff Session:
+								Last Login:
 							</h4>
 							<p class="fs-13">
-								The session included introductions, a review of
-								project goals and objectives, and initial
-								planning discussions.
+								You successfully logged into your account.
 							</p>
 							<p>
 								By:
 								<span class="text-primary"
-									>Isabella Cooper</span
+									>{{ user.get_full_name|default:user.username }}</span
 								>
 							</p>
 						</div>
 					</div>
+					{% endif %}
 					<div class="position-relative timeline-item">
-						<span class="time-line-date">2 days ago</span>
+						<span class="time-line-date">{{ user.date_joined|date:"d M Y" }}</span>
 
 						<div class="border-style-for-timeline dot-3">
 							<h4 class="fs-14 fw-medium mb-2">
-								Team Building Workshop:
+								Profile Setup:
 							</h4>
 							<p class="fs-13">
-								Last Friday, we conducted a team building
-								workshop focused on improving communication and
-								collaboration among team members. Activities
-								included team challenges, icebreakers, and open
-								discussions.
+								Your user profile was initialized with basic information. You can update your profile details anytime.
 							</p>
 							<p>
 								By:
-								<span class="text-primary">Lucas Morgan</span>
-							</p>
-						</div>
-					</div>
-					<div class="position-relative timeline-item">
-						<span class="time-line-date">3 days ago</span>
-
-						<div class="border-style-for-timeline dot-4 pb-0">
-							<h4 class="fs-14 fw-medium mb-2">
-								Lunch and Learn Session:
-							</h4>
-							<p class="fs-13">
-								We organized a lunch and learn session on March
-								15th where a guest speaker from the industry
-								discussed emerging trends in our field. It was
-								an insightful session that sparked valuable
-								discussions among team members.
-							</p>
-							<p>
-								By:
-								<span class="text-primary">Ethan Parker</span>
+								<span class="text-primary">{{ user.username }}</span>
 							</p>
 						</div>
 					</div>

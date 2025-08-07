@@ -1,14 +1,18 @@
 # Django Bootstrap Template
 
-Template ini adalah starter project Django dengan integrasi Bootstrap, cocok untuk membangun aplikasi web modern dengan tampilan responsif dan fitur autentikasi lengkap.
+A comprehensive Django web application with Bootstrap 5, user authentication, profile management, and file uploads.
 
-## Fitur
+## Features
 
-✅ **Sistem Autentikasi Lengkap**
-- Login dengan username/password
-- **Login dengan Google OAuth2** 🆕
-- Register akun baru
-- **Register dengan Google OAuth2** 🆕
+- ✅ User Authentication (Login/Register/Logout)
+- ✅ Django Allauth Integration (Google OAuth2 ready)
+- ✅ User Profile Management with CRUD operations
+- ✅ Profile Picture & Cover Photo Upload
+- ✅ Privacy Settings & Social Media Links
+- ✅ Bootstrap 5 Responsive UI
+- ✅ Environment Variables Configuration
+- ✅ Media File Handling with Auto-resize
+- ✅ SQLite Database (Production ready for PostgreSQL/MySQL)
 - Forgot Password
 - Logout
 - Proteksi halaman dengan login required

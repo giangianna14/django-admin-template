@@ -577,8 +577,9 @@
 								<div class="flex-shrink-0">
 									<img
 										class="rounded-circle wh-40 administrator"
-										src="/static/images/administrator.jpg"
+										src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}/static/images/administrator.jpg{% endif %}"
 										alt="admin"
+										style="object-fit: cover;"
 									/>
 								</div>
 								<div class="flex-grow-1 ms-2">
@@ -589,7 +590,7 @@
 											<div
 												class="d-flex align-content-center"
 											>
-												<h3>Olivia</h3>
+												<h3>{{ user.get_full_name|default:user.username }}</h3>
 											</div>
 										</div>
 									</div>
@@ -603,14 +604,15 @@
 									<div class="flex-shrink-0">
 										<img
 											class="rounded-circle wh-30 administrator"
-											src="/static/images/administrator.jpg"
+											src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}/static/images/administrator.jpg{% endif %}"
 											alt="admin"
+											style="object-fit: cover;"
 										/>
 									</div>
 									<div class="flex-grow-1 ms-2">
-										<h3 class="fw-medium">William John</h3>
+										<h3 class="fw-medium">{{ user.get_full_name|default:user.username }}</h3>
 										<span class="fs-12"
-											>Marketing Manager</span
+											>{{ user.email }}</span
 										>
 									</div>
 								</div>
@@ -618,7 +620,7 @@
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="my-profile.html"
+											href="/my-profile"
 										>
 											<i class="material-symbols-outlined"
 												>account_circle</i
@@ -629,7 +631,7 @@
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="chat.html"
+											href="/chat"
 										>
 											<i class="material-symbols-outlined"
 												>chat</i
@@ -640,7 +642,7 @@
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="to-do-list.html"
+											href="/to-do-list"
 										>
 											<i class="material-symbols-outlined"
 												>format_list_bulleted
@@ -651,7 +653,7 @@
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="my-profile.html"
+											href="/my-profile"
 										>
 											<i class="material-symbols-outlined"
 												>credit_card
@@ -664,7 +666,7 @@
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="settings.html"
+											href="/settings"
 										>
 											<i class="material-symbols-outlined"
 												>settings
@@ -672,10 +674,39 @@
 											<span class="ms-2">Settings</span>
 										</a>
 									</li>
+									{% if user.is_staff %}
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="tickets.html"
+											href="/members"
+										>
+											<i class="material-symbols-outlined"
+												>group</i
+											>
+											<span class="ms-2">Members</span>
+											<span class="badge bg-success ms-2 fs-10">Staff</span>
+										</a>
+									</li>
+									{% endif %}
+									{% if user.is_superuser %}
+									<li>
+										<a
+											class="dropdown-item d-flex align-items-center text-body"
+											href="/admin/"
+											target="_blank"
+										>
+											<i class="material-symbols-outlined"
+												>admin_panel_settings</i
+											>
+											<span class="ms-2">Django Admin</span>
+											<span class="badge bg-danger ms-2 fs-10">Admin</span>
+										</a>
+									</li>
+									{% endif %}
+									<li>
+										<a
+											class="dropdown-item d-flex align-items-center text-body"
+											href="/tickets"
 										>
 											<i class="material-symbols-outlined"
 												>support</i
@@ -686,7 +717,7 @@
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="lock-screen.html"
+											href="/lock-screen"
 										>
 											<i class="material-symbols-outlined"
 												>lock</i
@@ -699,7 +730,7 @@
 									<li>
 										<a
 											class="dropdown-item d-flex align-items-center text-body"
-											href="login.html"
+											href="/logout"
 										>
 											<i class="material-symbols-outlined"
 												>logout</i

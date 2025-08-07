@@ -9,7 +9,7 @@
 			<ol class="breadcrumb align-items-center mb-0 lh-1">
 				<li class="breadcrumb-item">
 					<a
-						href="#"
+						href="/dashboard"
 						class="d-flex align-items-center text-decoration-none"
 					>
 						<i class="ri-home-4-line fs-18 text-primary me-1"></i>
@@ -19,383 +19,432 @@
 					</a>
 				</li>
 				<li class="breadcrumb-item active" aria-current="page">
-					<span class="fw-medium">Social</span>
-				</li>
-				<li class="breadcrumb-item active" aria-current="page">
 					<span class="fw-medium">Settings</span>
 				</li>
 			</ol>
 		</nav>
 	</div>
 
+	<!-- Messages -->
+	{% if messages %}
+		{% for message in messages %}
+			<div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+				{{ message }}
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		{% endfor %}
+	{% endif %}
+
 	<div class="row justify-content-center">
 		<div class="col-lg-8">
+			<!-- Current Profile Pictures Section -->
+			<div class="card bg-white border-0 rounded-3 mb-4">
+				<div class="card-body p-4">
+					<h3 class="mb-lg-4 mb-3">Current Profile</h3>
+					
+					<div class="row">
+						<div class="col-md-6">
+							<div class="text-center mb-4">
+								<h5>Profile Picture</h5>
+								<div class="profile-picture-container">
+									<img src="{{ profile.get_profile_picture_url }}" 
+										 alt="Profile Picture" 
+										 class="rounded-circle border border-3"
+										 style="width: 150px; height: 150px; object-fit: cover;">
+								</div>
+								{% if profile.profile_picture %}
+									<form method="post" class="mt-2">
+										{% csrf_token %}
+										<button type="submit" name="delete_profile_picture" 
+												class="btn btn-outline-danger btn-sm"
+												onclick="return confirm('Are you sure you want to delete your profile picture?')">
+											<i class="ri-delete-bin-line"></i> Delete
+										</button>
+									</form>
+								{% endif %}
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="text-center mb-4">
+								<h5>Cover Photo</h5>
+								<div class="cover-photo-container">
+									<img src="{{ profile.get_cover_photo_url }}" 
+										 alt="Cover Photo" 
+										 class="rounded border border-3"
+										 style="width: 100%; height: 120px; object-fit: cover;">
+								</div>
+								{% if profile.cover_photo %}
+									<form method="post" class="mt-2">
+										{% csrf_token %}
+										<button type="submit" name="delete_cover_photo" 
+												class="btn btn-outline-danger btn-sm"
+												onclick="return confirm('Are you sure you want to delete your cover photo?')">
+											<i class="ri-delete-bin-line"></i> Delete
+										</button>
+									</form>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Account Settings -->
+			<div class="card bg-white border-0 rounded-3 mb-4">
+				<div class="card-body p-4">
+					<h3 class="mb-lg-4 mb-3">Account Settings</h3>
+
+					<form method="post">
+						{% csrf_token %}
+						<div class="row">
+							<div class="col-lg-6 col-sm-6">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Username</label>
+									{{ account_form.username }}
+									{% if account_form.username.errors %}
+										<div class="text-danger small mt-1">{{ account_form.username.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Email Address</label>
+									{{ account_form.email }}
+									{% if account_form.email.errors %}
+										<div class="text-danger small mt-1">{{ account_form.email.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">First Name</label>
+									{{ account_form.first_name }}
+									{% if account_form.first_name.errors %}
+										<div class="text-danger small mt-1">{{ account_form.first_name.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Last Name</label>
+									{{ account_form.last_name }}
+									{% if account_form.last_name.errors %}
+										<div class="text-danger small mt-1">{{ account_form.last_name.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-4 col-sm-4">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Current Password</label>
+									{{ account_form.current_password }}
+									<small class="text-muted">Required only if changing password</small>
+									{% if account_form.current_password.errors %}
+										<div class="text-danger small mt-1">{{ account_form.current_password.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-4 col-sm-4">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">New Password</label>
+									{{ account_form.new_password }}
+									<small class="text-muted">Leave blank to keep current password</small>
+									{% if account_form.new_password.errors %}
+										<div class="text-danger small mt-1">{{ account_form.new_password.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-4 col-sm-4">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Confirm New Password</label>
+									{{ account_form.confirm_password }}
+									{% if account_form.confirm_password.errors %}
+										<div class="text-danger small mt-1">{{ account_form.confirm_password.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-12">
+								{% if account_form.non_field_errors %}
+									<div class="alert alert-danger">
+										{{ account_form.non_field_errors }}
+									</div>
+								{% endif %}
+								<div class="d-flex flex-wrap gap-3">
+									<button type="submit" name="save_account"
+										class="btn btn-primary py-2 px-4 fw-medium fs-16">
+										<i class="ri-save-line text-white fw-medium"></i>
+										Save Account Settings
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- Profile Settings -->
 			<div class="card bg-white border-0 rounded-3 mb-4">
 				<div class="card-body p-4">
 					<h3 class="mb-lg-4 mb-3">Profile Settings</h3>
 
-					<form>
+					<form method="post" enctype="multipart/form-data">
+						{% csrf_token %}
 						<div class="row">
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>First Name</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="Alice"
-									/>
+									<label class="label text-secondary">Phone Number</label>
+									{{ profile_form.phone_number }}
+									{% if profile_form.phone_number.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.phone_number.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Last Name</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="Johnson"
-									/>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6">
-								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Email Address</label
-									>
-									<input
-										type="email"
-										class="form-control h-55"
-										value="johnson@trezo.com"
-									/>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6">
-								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Phone Number</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="+1 444 555 6699"
-									/>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6">
-								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Password</label
-									>
-									<input
-										type="password"
-										class="form-control h-55"
-										placeholder="Enter password"
-									/>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6">
-								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Confirm Password</label
-									>
-									<input
-										type="password"
-										class="form-control h-55"
-										placeholder="Enter confirm password"
-									/>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6">
-								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Address</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="E.g. 84 S. Arrowhead Court Branford"
-									/>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6">
-								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Country</label
-									>
-									<select
-										class="form-select form-control h-55"
-										aria-label="Default select example"
-									>
-										<option selected>Switzerland</option>
-										<option value="1">New Zealand</option>
-										<option value="2">Germany</option>
-										<option value="3">United States</option>
-									</select>
+									<label class="label text-secondary">Country</label>
+									{{ profile_form.country }}
+									{% if profile_form.country.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.country.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-12">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Add Your Bio</label
-									>
-									<textarea
-										rows="6"
-										class="form-control"
-										placeholder="E.g. It makes me feel..."
-									></textarea>
+									<label class="label text-secondary">Address</label>
+									{{ profile_form.address }}
+									{% if profile_form.address.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.address.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-12">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Who will be able to see your
-										profile?</label
-									>
-									<div class="d-flex flex-wrap gap-3">
-										<div class="form-check cursor">
-											<input
-												class="form-check-input"
-												type="radio"
-												name="exampleRadios"
-												id="exampleRadios1"
-												value="option1"
-												checked
-											/>
-											<label
-												class="form-check-label"
-												for="exampleRadios1"
-											>
-												Only me
-											</label>
-										</div>
-										<div class="form-check cursor">
-											<input
-												class="form-check-input"
-												type="radio"
-												name="exampleRadios"
-												id="exampleRadios2"
-												value="option2"
-											/>
-											<label
-												class="form-check-label"
-												for="exampleRadios2"
-											>
-												My followers
-											</label>
-										</div>
-										<div class="form-check cursor">
-											<input
-												class="form-check-input"
-												type="radio"
-												name="exampleRadios"
-												id="exampleRadios3"
-												value="option3"
-											/>
-											<label
-												class="form-check-label"
-												for="exampleRadios3"
-											>
-												Everyone
-											</label>
-										</div>
-									</div>
+									<label class="label text-secondary">Bio</label>
+									{{ profile_form.bio }}
+									{% if profile_form.bio.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.bio.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Your Skills</label
-									>
-									<select
-										class="form-select form-control h-55"
-										aria-label="Default select example"
-									>
-										<option selected>Leadership</option>
-										<option value="1">Data Analysis</option>
-										<option value="2">
-											Project Management
-										</option>
-										<option value="3">Teamwork</option>
-									</select>
+									<label class="label text-secondary">Skills</label>
+									{{ profile_form.skills }}
+									{% if profile_form.skills.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.skills.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Your Profession</label
-									>
-									<select
-										class="form-select form-control h-55"
-										aria-label="Default select example"
-									>
-										<option selected>
-											Financial Manager
-										</option>
-										<option value="1">IT Manager</option>
-										<option value="2">
-											Software Developer
-										</option>
-										<option value="3">
-											Physician Assistant
-										</option>
-									</select>
+									<label class="label text-secondary">Profession</label>
+									{{ profile_form.profession }}
+									{% if profile_form.profession.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.profession.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Company Name</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="Trezo Admin"
-									/>
+									<label class="label text-secondary">Company Name</label>
+									{{ profile_form.company_name }}
+									{% if profile_form.company_name.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.company_name.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Company Website</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="http://website.com"
-									/>
+									<label class="label text-secondary">Company Website</label>
+									{{ profile_form.company_website }}
+									{% if profile_form.company_website.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.company_website.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+
+							<!-- Social Media Links -->
+							<div class="col-12">
+								<h5 class="mb-3">Social Media Links</h5>
+							</div>
+							<div class="col-lg-6 col-sm-6">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Facebook</label>
+									{{ profile_form.facebook_url }}
+									{% if profile_form.facebook_url.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.facebook_url.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Facebook</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="https://www.facebook.com/"
-									/>
+									<label class="label text-secondary">Twitter/X</label>
+									{{ profile_form.twitter_url }}
+									{% if profile_form.twitter_url.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.twitter_url.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>X</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="https://x.com/"
-									/>
+									<label class="label text-secondary">LinkedIn</label>
+									{{ profile_form.linkedin_url }}
+									{% if profile_form.linkedin_url.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.linkedin_url.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Linkedin</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="https://www.linkedin.com/"
-									/>
+									<label class="label text-secondary">YouTube</label>
+									{{ profile_form.youtube_url }}
+									{% if profile_form.youtube_url.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.youtube_url.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>YouTube</label
-									>
-									<input
-										type="text"
-										class="form-control h-55"
-										value="https://www.youtube.com/"
-									/>
+									<label class="label text-secondary">Instagram</label>
+									{{ profile_form.instagram_url }}
+									{% if profile_form.instagram_url.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.instagram_url.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Profile Picture</label
-									>
-									<div
-										class="form-control h-100 text-center position-relative p-4 p-lg-5"
-									>
+									<label class="label text-secondary">GitHub</label>
+									{{ profile_form.github_url }}
+									{% if profile_form.github_url.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.github_url.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+
+							<!-- Image Uploads -->
+							<div class="col-12">
+								<h5 class="mb-3">Upload New Images</h5>
+							</div>
+							<div class="col-lg-6 col-sm-6">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">New Profile Picture</label>
+									<div class="form-control h-auto text-center position-relative p-4">
 										<div class="product-upload">
-											<label
-												for="file-upload"
-												class="file-upload mb-0"
-											>
-												<i
-													class="ri-folder-image-line bg-primary bg-opacity-10 p-2 rounded-1 text-primary"
-												></i>
-												<span
-													class="d-block text-body fs-14"
-													>Drag and drop an image or
-													<span
-														class="text-primary text-decoration-underline"
-														>Browse</span
-													></span
-												>
+											<label for="id_profile_picture" class="file-upload mb-0">
+												<i class="ri-folder-image-line bg-primary bg-opacity-10 p-2 rounded-1 text-primary"></i>
+												<span class="d-block text-body fs-14">
+													Drag and drop an image or
+													<span class="text-primary text-decoration-underline">Browse</span>
+												</span>
 											</label>
-											<input
-												id="file-upload"
-												type="file"
-											/>
+											{{ profile_form.profile_picture }}
 										</div>
 									</div>
+									{% if profile_form.profile_picture.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.profile_picture.errors.0 }}</div>
+									{% endif %}
 								</div>
 							</div>
 							<div class="col-lg-6 col-sm-6">
 								<div class="form-group mb-4">
-									<label class="label text-secondary"
-										>Cover Photo</label
-									>
-									<div
-										class="form-control h-100 text-center position-relative p-4 p-lg-5"
-									>
+									<label class="label text-secondary">New Cover Photo</label>
+									<div class="form-control h-auto text-center position-relative p-4">
 										<div class="product-upload">
-											<label
-												for="file-upload"
-												class="file-upload mb-0"
-											>
-												<i
-													class="ri-file-line bg-primary bg-opacity-10 p-2 rounded-1 text-primary"
-												></i>
-												<span
-													class="d-block text-body fs-14"
-													>Drag and drop a file or
-													<span
-														class="text-primary text-decoration-underline"
-														>Browse</span
-													></span
-												>
+											<label for="id_cover_photo" class="file-upload mb-0">
+												<i class="ri-file-line bg-primary bg-opacity-10 p-2 rounded-1 text-primary"></i>
+												<span class="d-block text-body fs-14">
+													Drag and drop a file or
+													<span class="text-primary text-decoration-underline">Browse</span>
+												</span>
 											</label>
-											<input
-												id="file-upload"
-												type="file"
-											/>
+											{{ profile_form.cover_photo }}
+										</div>
+									</div>
+									{% if profile_form.cover_photo.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.cover_photo.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+
+							<!-- Privacy Settings -->
+							<div class="col-12">
+								<h5 class="mb-3">Privacy Settings</h5>
+							</div>
+							<div class="col-lg-12">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Who will be able to see your profile?</label>
+									<div class="d-flex flex-wrap gap-3 mt-2">
+										{% for radio in profile_form.profile_visibility %}
+											<div class="form-check cursor">
+												{{ radio.tag }}
+												<label class="form-check-label" for="{{ radio.id_for_label }}">
+													{{ radio.choice_label }}
+												</label>
+											</div>
+										{% endfor %}
+									</div>
+									{% if profile_form.profile_visibility.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.profile_visibility.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="col-lg-12">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Privacy Options</label>
+									<div class="mt-2">
+										<div class="form-check mb-3">
+											{{ profile_form.show_email }}
+											<label class="form-check-label" for="{{ profile_form.show_email.id_for_label }}">
+												Allow users to see your email
+											</label>
+										</div>
+										<div class="form-check mb-3">
+											{{ profile_form.show_experiences }}
+											<label class="form-check-label" for="{{ profile_form.show_experiences.id_for_label }}">
+												Allow users to see your experiences
+											</label>
+										</div>
+										<div class="form-check mb-0">
+											{{ profile_form.show_followers }}
+											<label class="form-check-label" for="{{ profile_form.show_followers.id_for_label }}">
+												Allow users to see your followers
+											</label>
 										</div>
 									</div>
 								</div>
 							</div>
+
 							<div class="col-lg-12">
+								<div class="form-group mb-4">
+									<label class="label text-secondary">Who can tag you?</label>
+									<div class="d-flex flex-wrap gap-3 mt-2">
+										{% for radio in profile_form.who_can_tag %}
+											<div class="form-check cursor">
+												{{ radio.tag }}
+												<label class="form-check-label" for="{{ radio.id_for_label }}">
+													{{ radio.choice_label }}
+												</label>
+											</div>
+										{% endfor %}
+									</div>
+									{% if profile_form.who_can_tag.errors %}
+										<div class="text-danger small mt-1">{{ profile_form.who_can_tag.errors.0 }}</div>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="col-lg-12">
+								{% if profile_form.non_field_errors %}
+									<div class="alert alert-danger">
+										{{ profile_form.non_field_errors }}
+									</div>
+								{% endif %}
 								<div class="d-flex flex-wrap gap-3">
-									<button
-										class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white"
-									>
-										Cancel
-									</button>
-									<button
-										class="btn btn-primary py-2 px-4 fw-medium fs-16"
-									>
-										<i
-											class="ri-add-line text-white fw-medium"
-										></i>
-										Save Information
+									<button type="submit" name="save_profile"
+										class="btn btn-primary py-2 px-4 fw-medium fs-16">
+										<i class="ri-save-line text-white fw-medium"></i>
+										Save Profile Settings
 									</button>
 								</div>
 							</div>
@@ -404,114 +453,63 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- Right Sidebar -->
 		<div class="col-lg-4">
 			<div class="card bg-white border-0 rounded-3 mb-4">
 				<div class="card-body p-4">
-					<h3 class="mb-lg-4 mb-3">Privacy Policy</h3>
+					<h3 class="mb-lg-4 mb-3">Profile Summary</h3>
+
+					<div class="mb-3">
+						<strong>Username:</strong> {{ user.username }}
+					</div>
+					<div class="mb-3">
+						<strong>Email:</strong> {{ user.email }}
+					</div>
+					<div class="mb-3">
+						<strong>Full Name:</strong> {{ user.get_full_name|default:"Not set" }}
+					</div>
+					<div class="mb-3">
+						<strong>Member Since:</strong> {{ user.date_joined|date:"M d, Y" }}
+					</div>
+					<div class="mb-3">
+						<strong>Last Login:</strong> {{ user.last_login|date:"M d, Y H:i"|default:"Never" }}
+					</div>
+					{% if profile.skills %}
+					<div class="mb-3">
+						<strong>Skills:</strong> {{ profile.display_skills }}
+					</div>
+					{% endif %}
+					{% if profile.profession %}
+					<div class="mb-3">
+						<strong>Profession:</strong> {{ profile.display_profession }}
+					</div>
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="card bg-white border-0 rounded-3 mb-4">
+				<div class="card-body p-4">
+					<h3 class="mb-lg-4 mb-3">Account Management</h3>
 
 					<div class="mb-4">
-						<div class="form-check mb-3">
-							<input
-								class="form-check-input"
-								type="checkbox"
-								value=""
-								id="flexCheckDefault"
-							/>
-							<label
-								class="form-check-label"
-								for="flexCheckDefault"
-							>
-								Allow users to show your email
-							</label>
-						</div>
-						<div class="form-check mb-3">
-							<input
-								class="form-check-input"
-								type="checkbox"
-								value=""
-								id="flexCheckChecked2"
-							/>
-							<label
-								class="form-check-label"
-								for="flexCheckChecked2"
-							>
-								Allow users to show your experiences
-							</label>
-						</div>
-						<div class="form-check mb-0">
-							<input
-								class="form-check-input"
-								type="checkbox"
-								value=""
-								id="flexCheckChecked3"
-							/>
-							<label
-								class="form-check-label"
-								for="flexCheckChecked3"
-							>
-								Allow users to show your followers
-							</label>
-						</div>
-					</div>
-					<div class="mb-4">
-						<label class="label text-secondary"
-							>Who can tag you?</label
-						>
-						<div class="d-flex flex-wrap gap-3">
-							<div class="form-check cursor">
-								<input
-									class="form-check-input"
-									type="radio"
-									name="exampleRadios"
-									id="exampleRadios1"
-									value="option1"
-									checked
-								/>
-								<label
-									class="form-check-label"
-									for="exampleRadios1"
-								>
-									Everyone
-								</label>
-							</div>
-							<div class="form-check cursor">
-								<input
-									class="form-check-input"
-									type="radio"
-									name="exampleRadios"
-									id="exampleRadios2"
-									value="option2"
-								/>
-								<label
-									class="form-check-label"
-									for="exampleRadios2"
-								>
-									Group Member
-								</label>
-							</div>
-						</div>
-					</div>
-					<div class="mb-4">
-						<label class="label text-secondary"
-							>Account Deletion Or Transfer</label
-						>
-						<p>
-							Transfer this account to another person or to a
-							company repositories.
+						<label class="label text-secondary">Account Deletion Or Transfer</label>
+						<p class="small">
+							Transfer this account to another person or delete it permanently.
 						</p>
 					</div>
 					<div class="d-flex flex-wrap gap-3">
 						<button
 							class="btn btn-danger py-2 px-4 fw-medium fs-16 text-white"
+							onclick="alert('Account deletion feature will be implemented soon.')"
 						>
 							Delete Account
 						</button>
 						<button
-							class="btn btn-primary py-2 px-4 fw-medium fs-16"
+							class="btn btn-outline-primary py-2 px-4 fw-medium fs-16"
+							onclick="alert('Account transfer feature will be implemented soon.')"
 						>
-							<i
-								class="ri-arrow-left-right-line text-white fw-medium"
-							></i>
+							<i class="ri-arrow-left-right-line fw-medium"></i>
 							Transfer Account
 						</button>
 					</div>
@@ -520,4 +518,44 @@
 		</div>
 	</div>
 </div>
+
+<style>
+/* Custom styling for file uploads */
+#id_profile_picture, #id_cover_photo {
+    display: none;
+}
+
+.product-upload {
+    cursor: pointer;
+}
+
+.file-upload {
+    cursor: pointer;
+    display: block;
+}
+
+.profile-picture-container img,
+.cover-photo-container img {
+    transition: transform 0.3s ease;
+}
+
+.profile-picture-container:hover img,
+.cover-photo-container:hover img {
+    transform: scale(1.05);
+}
+
+/* Form styling */
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+</style>
 {% endblock %}

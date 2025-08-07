@@ -1,8 +1,12 @@
 from django.shortcuts import HttpResponse, render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .forms import LoginForm, RegisterForm, ForgotPasswordForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.db.models import Q
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, UserProfileForm, UserAccountForm
+from .models import UserProfile
 
 def home(request):
     return render(request, 'home.html', {})
@@ -347,8 +351,57 @@ def edit_an_event(request):
 def profile(request):
     return render(request, 'profile.html', {})
 
+@login_required
 def settings(request):
-    return render(request, 'settings.html', {})
+    # Get or create user profile
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        # Handle form submission
+        account_form = UserAccountForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        
+        # Check which form was submitted
+        if 'save_account' in request.POST:
+            if account_form.is_valid():
+                account_form.save()
+                messages.success(request, 'Account information updated successfully!')
+                return redirect('settings')
+            else:
+                messages.error(request, 'Please correct the errors below.')
+        
+        elif 'save_profile' in request.POST:
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile information updated successfully!')
+                return redirect('settings')
+            else:
+                messages.error(request, 'Please correct the errors below.')
+        
+        elif 'delete_profile_picture' in request.POST:
+            if profile.profile_picture:
+                profile.profile_picture.delete()
+                messages.success(request, 'Profile picture deleted successfully!')
+            return redirect('settings')
+        
+        elif 'delete_cover_photo' in request.POST:
+            if profile.cover_photo:
+                profile.cover_photo.delete()
+                messages.success(request, 'Cover photo deleted successfully!')
+            return redirect('settings')
+            
+    else:
+        # Initialize forms with current data
+        account_form = UserAccountForm(instance=request.user)
+        profile_form = UserProfileForm(instance=profile)
+    
+    context = {
+        'user': request.user,
+        'profile': profile,
+        'account_form': account_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'settings.html', context)
 
 def invoice_list(request):
     return render(request, 'invoice-list.html', {})
@@ -380,8 +433,16 @@ def teams_two(request):
 def my_projects(request):
     return render(request, 'my-projects.html', {})
 
+@login_required
 def my_profile(request):
-    return render(request, 'my-profile.html', {})
+    # Get or create user profile
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    context = {
+        'user': request.user,
+        'profile': profile,
+    }
+    return render(request, 'my-profile.html', context)
 
 def material_icons(request):
     return render(request, 'material-icons.html', {})
@@ -482,9 +543,6 @@ def apex_charts(request):
 def reset_password(request):
     return render(request, 'reset-password.html', {})
 
-def lock_screen(request):
-    return render(request, 'lock-screen.html', {})
-
 def logout(request):
     auth_logout(request)
     messages.success(request, 'Anda berhasil logout.')
@@ -559,8 +617,68 @@ def google_map(request):
 def notification(request):
     return render(request, 'notification.html', {})
 
+def is_staff_user(user):
+    """Check if user is staff"""
+    return user.is_authenticated and user.is_staff
+
+@login_required
+def lock_screen(request):
+    """Lock screen view - user must re-enter password to unlock"""
+    error = None
+    
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        if request.user.check_password(password):
+            # Password correct, redirect to dashboard or intended page
+            next_url = request.GET.get('next', 'dashboard')
+            messages.success(request, 'Screen unlocked successfully!')
+            return redirect(next_url)
+        else:
+            error = 'Password is incorrect. Please try again.'
+    
+    context = {
+        'user': request.user,
+        'error': error,
+    }
+    return render(request, 'lock-screen.html', context)
+
+@user_passes_test(is_staff_user, login_url='login')
 def members(request):
-    return render(request, 'members.html', {})
+    """Members page - only accessible by staff users"""
+    search_query = request.GET.get('search', '')
+    
+    # Get all users with their profiles
+    users = User.objects.select_related('profile').all()
+    
+    # Filter by search query if provided
+    if search_query:
+        users = users.filter(
+            Q(username__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+    
+    # Pagination
+    paginator = Paginator(users, 12)  # Show 12 members per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # Statistics
+    total_users = User.objects.count()
+    staff_users = User.objects.filter(is_staff=True).count()
+    active_users = User.objects.filter(is_active=True).count()
+    users_with_profiles = User.objects.filter(profile__isnull=False).count()
+    
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'total_users': total_users,
+        'staff_users': staff_users,
+        'active_users': active_users,
+        'users_with_profiles': users_with_profiles,
+    }
+    return render(request, 'members.html', context)
 
 def account_settings(request):
     return render(request, 'account-settings.html', {})
