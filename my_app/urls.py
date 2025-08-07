@@ -11,6 +11,9 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     
+    # Django-allauth URLs
+    path('accounts/', include('allauth.urls')),
+    
     # Core pages (home, features, contact, etc.)
     path('', include('core.urls')),
     
