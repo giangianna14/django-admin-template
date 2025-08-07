@@ -52,23 +52,41 @@ def login(request):
 def register(request):
     """Register view with OAuth2 support."""
     if request.user.is_authenticated:
-        return redirect('dashboard:index')
+        return redirect('/dashboard/')
     
     context = {
         'title': 'Register',
-        'form': UserCreationForm(),
     }
     
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}! You can now log in.')
-            return redirect('authentication:login')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        # Basic validation
+        if not username or not password1 or not password2:
+            messages.error(request, 'All fields are required.')
+        elif password1 != password2:
+            messages.error(request, 'Passwords do not match.')
+        elif len(password1) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists.')
+        elif email and User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already exists.')
         else:
-            messages.error(request, 'Please correct the errors below.')
-        context['form'] = form
+            try:
+                # Create user
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password1
+                )
+                messages.success(request, f'Account created for {username}! You can now log in.')
+                return redirect('/auth/login/')
+            except Exception as e:
+                messages.error(request, 'An error occurred while creating your account.')
     
     return render(request, 'authentication/register.html', context)
 
@@ -344,3 +362,8 @@ def password_reset_confirm(request, uidb64, token):
 def password_reset_complete(request):
     """Password reset complete view."""
     return render(request, 'authentication/password_reset_complete.html')
+
+
+def test_login(request):
+    """Test login view for debugging."""
+    return render(request, 'authentication/test_login.html')

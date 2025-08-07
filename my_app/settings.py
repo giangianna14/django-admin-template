@@ -81,7 +81,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, "templates"),
             os.path.join(BASE_DIR, "my_app", "templates")
         ],
         'APP_DIRS': True,
@@ -230,6 +229,11 @@ SOCIALACCOUNT_PROVIDERS = {
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+# Custom authentication URLs (redirect allauth to custom views)
+LOGIN_URL = '/auth/login/'
+ACCOUNT_LOGIN_URL = '/auth/login/'
+ACCOUNT_SIGNUP_URL = '/auth/register/'
 
 # Email Backend (for development)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

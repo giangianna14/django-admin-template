@@ -1,0 +1,62 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Django Server",
+            "type": "shell",
+            "command": "python3",
+            "args": ["manage.py", "runserver"],
+            "group": "build",
+            "isBackground": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Open in Chrome",
+            "type": "shell",
+            "command": "google-chrome",
+            "args": ["http://127.0.0.1:8000"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Open Login in Chrome",
+            "type": "shell", 
+            "command": "google-chrome",
+            "args": ["http://127.0.0.1:8000/auth/login/"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Open Admin in Chrome",
+            "type": "shell",
+            "command": "google-chrome", 
+            "args": ["http://127.0.0.1:8000/admin/"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

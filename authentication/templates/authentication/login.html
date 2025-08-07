@@ -1,0 +1,168 @@
+{% extends 'layout/auth_base.html' %} 
+{% load static %}
+
+{% block content %}
+<!-- Start Main Content Area -->
+<div class="container">
+	<div class="main-content d-flex flex-column p-0">
+		<div class="m-auto m-1230">
+			<div class="row align-items-center">
+				<div class="col-lg-6 d-none d-lg-block">
+					<img
+						src="{% static 'images/login.jpg' %}"
+						class="rounded-3"
+						alt="login"
+						style="width: 100%; height: auto; max-width: 500px;"
+						onerror="this.style.display='none'"
+					/>
+				</div>
+				<div class="col-lg-6">
+					<div class="mw-480 ms-lg-auto">
+						<div class="d-inline-block mb-4">
+							<img
+								src="{% static 'images/logo.svg' %}"
+								class="rounded-3 for-light-logo"
+								alt="logo"
+								style="height: 40px;"
+								onerror="this.outerHTML='<h3>Django Admin</h3>'"
+							/>
+							<img
+								src="{% static 'images/white-logo.svg' %}"
+								class="rounded-3 for-dark-logo d-none"
+								alt="logo"
+								style="height: 40px;"
+								onerror="this.style.display='none'"
+							/>
+						</div>
+						<h3 class="fs-28 mb-2" style="font-size: 28px;">Welcome back to Trezo!</h3>
+						<p class="fw-medium fs-16 mb-4" style="font-size: 16px;">
+							Sign In with social account or enter your details
+						</p>
+						
+						<!-- Social Login Buttons -->
+						<div class="row justify-content-center">
+							<div class="col-lg-4 col-sm-4">
+								<a
+									href="/accounts/google/login/"
+									class="btn btn-outline-secondary bg-transparent w-100 py-2 hover-bg mb-4"
+									style="border-color: #d6dae1; text-decoration: none;"
+									title="Login with Google"
+								>
+									<img
+										src="{% static 'images/google.svg' %}"
+										alt="google"
+										style="height: 20px;"
+										onerror="this.outerHTML='<span>Google</span>'"
+									/>
+								</a>
+							</div>
+							<div class="col-lg-4 col-sm-4">
+								<a
+									href="/accounts/facebook/login/"
+									class="btn btn-outline-secondary bg-transparent w-100 py-2 hover-bg mb-4"
+									style="border-color: #d6dae1; text-decoration: none;"
+									title="Login with Facebook"
+								>
+									<img
+										src="{% static 'images/facebook2.svg' %}"
+										alt="facebook2"
+										style="height: 20px;"
+										onerror="this.outerHTML='<span>Facebook</span>'"
+									/>
+								</a>
+							</div>
+							<div class="col-lg-4 col-sm-4">
+								<a
+									href="/accounts/apple/login/"
+									class="btn btn-outline-secondary bg-transparent w-100 py-2 hover-bg mb-4"
+									style="border-color: #d6dae1; text-decoration: none;"
+									title="Login with Apple"
+								>
+									<img
+										src="{% static 'images/apple.svg' %}"
+										alt="apple"
+										style="height: 20px;"
+										onerror="this.outerHTML='<span>Apple</span>'"
+									/>
+								</a>
+							</div>
+						</div>
+						
+						<div class="text-center mb-4">
+							<span class="text-muted">Or login with email</span>
+						</div>
+						
+						<!-- Regular Login Form -->
+						<form method="post" action="{% url 'authentication:login' %}">
+							{% csrf_token %}
+							
+							<!-- Display Messages -->
+							{% if messages %}
+								{% for message in messages %}
+									<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+										{{ message }}
+										<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+									</div>
+								{% endfor %}
+							{% endif %}
+							
+							<div class="form-group mb-4">
+								<label class="label text-secondary">Username or Email</label>
+								<input
+									type="text"
+									name="username"
+									class="form-control h-55"
+									style="height: 55px;"
+									placeholder="Enter username or email"
+									required
+								/>
+							</div>
+							<div class="form-group mb-4">
+								<label class="label text-secondary">Password</label>
+								<input
+									type="password"
+									name="password"
+									class="form-control h-55"
+									style="height: 55px;"
+									placeholder="Type password"
+									required
+								/>
+							</div>
+							<div class="form-group mb-4">
+								<a
+									href="{% url 'authentication:forget-password' %}"
+									class="text-decoration-none text-primary fw-semibold"
+									style="color: #007bff !important;"
+								>Forgot Password?</a>
+							</div>
+							<div class="form-group mb-4">
+								<button
+									type="submit"
+									class="btn btn-primary fw-medium py-2 px-3 w-100"
+									style="background-color: #007bff; border-color: #007bff;"
+								>
+									<div class="d-flex align-items-center justify-content-center py-1">
+										<i class="material-symbols-outlined text-white fs-20 me-2" style="font-size: 20px;">login</i>
+										<span>Login</span>
+									</div>
+								</button>
+							</div>
+							<div class="form-group">
+								<p>
+									Don't have an account?
+									<a
+										href="{% url 'authentication:register' %}"
+										class="fw-medium text-primary text-decoration-none"
+										style="color: #007bff !important;"
+									>Register</a>
+								</p>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Main Content Area -->
+{% endblock %}
