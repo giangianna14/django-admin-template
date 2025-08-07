@@ -1,201 +1,54 @@
 """
-URL configuration for trezo_django project.
+Main URL configuration for the Django admin template project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
-from django.urls import path
+from django.contrib import admin
+from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from . import views
 
 urlpatterns = [
-    path('', views.home, name="home"),
-    path('features/', views.features, name="features"),
-    path('our-team/', views.our_team, name="our-team"),
-    path('faqs/', views.faqs, name="faqs"),
-    path('contact/', views.contact, name="contact"),
-    path('login/', views.login, name="login"),
-    path('register/', views.register, name="register"),
-    path('forget-password/', views.forget_password, name="forget_password"),
-    path('dashboard/', views.dashboard, name="dashboard"),
-    path('crm/', views.crm, name="crm"),
-    path('project-management/', views.project_management, name="project-management"),
-    path('lms/', views.lms, name="lms"),
-    path('help-desk/', views.help_desk, name="help-desk"),
-    path('analytics/', views.analytics, name="analytics"),
-    path('crypto/', views.crypto, name="crypto"),
-    path('sales/', views.sales, name="sales"),
-    path('hospital/', views.hospital, name="hospital"),
-    path('call-center/', views.call_center, name="call-center"),
-    path('school/', views.school, name="school"),
-    path('hrm/', views.hrm, name="hrm"),
-    path('finance/', views.finance, name="finance"),
-    path('shipment/', views.shipment, name="shipment"),
-    path('real-estate/', views.real_estate, name="real-estate"),
-    path('saas/', views.saas, name="saas"),
-    path('nft/', views.nft, name="nft"),
-    path('marketing/', views.marketing, name="marketing"),
-    path('pos-system/', views.pos_system, name="pos-system"),
-    path('podcast/', views.podcast, name="podcast"),
-    path('social-media/', views.social_media, name="social-media"),
-    path('calendar/', views.calendar, name="calendar"),
-    path('to-do-list/', views.to_do_list, name="to-do-list"),
-    path('contacts/', views.contacts, name="contacts"),
-    path('chat/', views.chat, name="chat"),
-    path('inbox/', views.inbox, name="inbox"),
-    path('compose/', views.compose, name="compose"),
-    path('read-email/', views.read_email, name="read-email"),
-    path('snoozed/', views.snoozed, name="snoozed"),
-    path('draft/', views.draft, name="draft"),
-    path('sent-mail/', views.sent_mail, name="sent-mail"),
-    path('trash-email/', views.trash_email, name="trash-email"),
-    path('spam/', views.spam, name="spam"),
-    path('starred/', views.starred, name="starred"),
-    path('important/', views.important, name="important"),
-    path('kanban-board/', views.kanban_board, name="kanban-board"),
-    path('file-manager/', views.file_manager, name="file-manager"),
-    path('assets/', views.assets, name="assets"),
-    path('projects/', views.projects, name="projects"),
-    path('personal/', views.personal, name="personal"),
-    path('applications/', views.applications, name="applications"),
-    path('documents/', views.documents, name="documents"),
-    path('media/', views.media, name="media"),
-    path('recents/', views.recents, name="recents"),
-    path('drive-important/', views.drive_important, name="drive-important"),
-    path('drive-spam/', views.drive_spam, name="drive-spam"),
-    path('drive-trash/', views.drive_trash, name="drive-trash"),
-    path('products-grid/', views.products_grid, name="products-grid"),
-    path('products-list/', views.products_list, name="products-list"),
-    path('product-details/', views.product_details, name="product-details"),
-    path('create-product/', views.create_product, name="create-product"),
-    path('edit-product/', views.edit_product, name="edit-product"),
-    path('cart/', views.cart, name="cart"),
-    path('checkout/', views.checkout, name="checkout"),
-    path('orders/', views.orders, name="orders"),
-    path('order-details/', views.order_details, name="order-details"),
-    path('create-order/', views.create_order, name="create-order"),
-    path('order-tracking/', views.order_tracking, name="order-tracking"),
-    path('customers/', views.customers, name="customers"),
-    path('customer-details/', views.customer_details, name="customer-details"),
-    path('categories/', views.categories, name="categories"),
-    path('sellers/', views.sellers, name="sellers"),
-    path('seller-details/', views.seller_details, name="seller-details"),
-    path('create-seller/', views.create_seller, name="create-seller"),
-    path('reviews/', views.reviews, name="reviews"),
-    path('contacts-2/', views.contacts_two, name="contacts-2"),
-    path('customers-2/', views.customers_two, name="customers-2"),
-    path('leads/', views.leads, name="leads"),
-    path('deals/', views.deals, name="deals"),
-    path('project-overview/', views.project_overview, name="project-overview"),
-    path('project-list/', views.project_list, name="project-list"),
-    path('create-project/', views.create_project, name="create-project"),
-    path('clients/', views.clients, name="clients"),
-    path('teams/', views.teams, name="teams"),
-    path('kanban-board-2/', views.kanban_board_two, name="kanban-board-2"),
-    path('user/', views.user, name="user"),
-    path('courses-list/', views.courses_list, name="courses-list"),
-    path('course-details/', views.course_details, name="course-details"),
-    path('lesson-preview/', views.lesson_preview, name="lesson-preview"),
-    path('edit-course/', views.edit_course, name="edit-course"),
-    path('instructors/', views.instructors, name="instructors"),
-    path('tickets/', views.tickets, name="tickets"),
-    path('ticket-details/', views.ticket_details, name="ticket-details"),
-    path('agents/', views.agents, name="agents"),
-    path('reports/', views.reports, name="reports"),
-    path('starter/', views.starter, name="starter"),
-    path('events/', views.events, name="events"),
-    path('events-list/', views.events_list, name="events-list"),
-    path('event-details/', views.event_details, name="event-details"),
-    path('create-an-event/', views.create_an_event, name="create-an-event"),
-    path('edit-an-event/', views.edit_an_event, name="edit-an-event"),
-    path('profile/', views.profile, name="profile"),
-    path('settings/', views.settings, name="settings"),
-    path('invoice-list/', views.invoice_list, name="invoice-list"),
-    path('invoice-details/', views.invoice_details, name="invoice-details"),
-    path('create-invoice/', views.create_invoice, name="create-invoice"),
-    path('edit-invoice/', views.edit_invoice, name="edit-invoice"),
-    path('team-members/', views.team_members, name="team-members"),
-    path('users-list/', views.users_list, name="users-list"),
-    path('add-user/', views.add_user, name="add-user"),
-    path('user-profile/', views.user_profile, name="user-profile"),
-    path('teams-2/', views.teams_two, name="teams-2"),
-    path('my-projects/', views.my_projects, name="my-projects"),
-    path('my-profile/', views.my_profile, name="my-profile"),
-    path('material-icons/', views.material_icons, name="material-icons"),
-    path('feathericon/', views.feathericon, name="feathericon"),
-    path('remixicon/', views.remixicon, name="remixicon"),
-    path('alerts/', views.alerts, name="alerts"),
-    path('avatar/', views.avatar, name="avatar"),
-    path('buttons/', views.buttons, name="buttons"),
-    path('badges/', views.badges, name="badges"),
-    path('cards/', views.cards, name="cards"),
-    path('carousels/', views.carousels, name="carousels"),
-    path('dropdowns/', views.dropdowns, name="dropdowns"),
-    path('grids/', views.grids, name="grids"),
-    path('images/', views.images, name="images"),
-    path('list/', views.list, name="list"),
-    path('modals/', views.modals, name="modals"),
-    path('navs/', views.navs, name="navs"),
-    path('paginations/', views.paginations, name="paginations"),
-    path('popover-tooltips/', views.popover_tooltips, name="popover-tooltips"),
-    path('progress/', views.progress, name="progress"),
-    path('spinners/', views.spinners, name="spinners"),
-    path('tabs/', views.tabs, name="tabs"),
-    path('accordions/', views.accordions, name="accordions"),
-    path('date-time-picker/', views.date_time_picker, name="date-time-picker"),
-    path('videos/', views.videos, name="videos"),
-    path('basic-table/', views.basic_table, name="basic-table"),
-    path('data-tables/', views.data_tables, name="data-tables"),
-    path('basic-elements/', views.basic_elements, name="basic-elements"),
-    path('advanced-elements/', views.advanced_elements, name="advanced-elements"),
-    path('validation/', views.validation, name="validation"),
-    path('wizard/', views.wizard, name="wizard"),
-    path('editors/', views.editors, name="editors"),
-    path('file-upload/', views.file_upload, name="file-upload"),
-    path('apex-charts/', views.apex_charts, name="apex-charts"),
-    path('reset-password/', views.reset_password, name="reset-password"),
-    path('lock-screen/', views.lock_screen, name="lock-screen"),
-    path('logout/', views.logout, name="logout"),
-    path('confirm-mail/', views.confirm_mail, name="confirm-mail"),
-    path('pricing-plan/', views.pricing_plan, name="pricing-plan"),
-    path('faq/', views.faq, name="faq"),
-    path('timeline/', views.timeline, name="timeline"),
-    path('animation/', views.animation, name="animation"),
-    path('clip-board/', views.clip_board, name="clip-board"),
-    path('drag-drop/', views.drag_drop, name="drag-drop"),
-    path('range-slider/', views.range_slider, name="range-slider"),
-    path('ratings/', views.ratings, name="ratings"),
-    path('toasts/', views.toasts, name="toasts"),
-    path('check-radio/', views.check_radio, name="check-radio"),
-    path('sweet-alarts/', views.sweet_alarts, name="sweet-alarts"),
-    path('select/', views.select, name="select"),
-    path('scrollbar/', views.scrollbar, name="scrollbar"),
-    path('typography/', views.typography, name="typography"),
-    path('gallery/', views.gallery, name="gallery"),
-    path('search/', views.search, name="search"),
-    path('blank-page/', views.blank_page, name="blank-page"),
-    path('error-page/', views.error_page, name="error-page"),
-    path('internal-error/', views.internal_error, name="internal-error"),
-    path('widgets/', views.widgets, name="widgets"),
-    path('google-map/', views.google_map, name="google-map"),
-    path('notification/', views.notification, name="notification"),
-    path('members/', views.members, name="members"),
-    path('account-settings/', views.account_settings, name="account-settings"),
-    path('change-password/', views.change_password, name="change-password"),
-    path('connections/', views.connections, name="connections"),
-    path('privacy-policy/', views.privacy_policy, name="privacy-policy"),
-    path('terms-conditions/', views.terms_conditions, name="terms-conditions"),
+    path('admin/', admin.site.urls),
+    
+    # Core pages (home, features, contact, etc.)
+    path('', include('core.urls')),
+    
+    # Authentication (login, register, etc.)
+    path('auth/', include('authentication.urls')),
+    
+    # Dashboard pages
+    path('dashboard/', include('dashboard.urls')),
+    
+    # E-commerce module
+    path('ecommerce/', include('ecommerce.urls')),
+    
+    # Communication module (email, chat, calendar)
+    path('communication/', include('communication.urls')),
+    
+    # UI Components
+    path('components/', include('ui_components.urls')),
+    
+    # Learning Management System
+    path('lms/', include('lms.urls')),
+    
+    # Events Management
+    path('events/', include('events.urls')),
+    
+    # Invoicing
+    path('invoicing/', include('invoicing.urls')),
+    
+    # Support & Help Desk
+    path('support/', include('support.urls')),
+    
+    # User Management
+    path('users/', include('user_management.urls')),
+    
+    # Project Management
+    path('projects/', include('project_management.urls')),
+    
+    # File Management
+    path('files/', include('file_management.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

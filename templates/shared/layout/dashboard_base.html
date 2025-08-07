@@ -1,0 +1,32 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>
+			{% block title %}Trezo - Django Bootstrap 5 Admin Dashboard
+			Template{% endblock %}
+		</title>
+		{% include 'layout/partials/asset_files.html' %}
+	</head>
+	<body class="boxed-size">
+		{% include 'layout/partials/preloader.html' %}
+		{% include 'layout/partials/dashboard_sidebar.html' %}
+		<!-- Start Main Content Area -->
+		<div class="container-fluid">
+			<div class="main-content d-flex flex-column">
+				{% include 'layout/partials/dashboard_header.html' %} 
+                
+                {% block content %}
+				<!-- Default content can go here -->
+
+				<!-- Default content can go here -->
+				{% endblock %}
+
+				<div class="flex-grow-1"></div>
+				{% include 'layout/partials/dashboard_footer.html' %}
+			</div>
+		</div>
+		{% include 'layout/partials/dashboard_settings.html' %}
+        {% include 'layout/partials/js_files.html' %}
+	</body>
+</html>

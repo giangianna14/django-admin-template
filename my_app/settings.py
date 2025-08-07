@@ -38,7 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # "templates"
+    
+    # Custom Apps
+    'core',
+    'authentication',
+    'dashboard',
+    'ecommerce',
+    'project_management',
+    'communication',
+    'ui_components',
+    'file_management',
+    'lms',
+    'events',
+    'invoicing',
+    'support',
+    'user_management',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +70,10 @@ ROOT_URLCONF = 'my_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "my_app", "templates")],
+        'DIRS': [
+            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "my_app", "templates")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
