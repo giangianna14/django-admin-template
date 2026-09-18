@@ -1,0 +1,188 @@
+{% extends 'menu_management/base.html' %}
+
+{% block title %}Menu Activity Logs{% endblock %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h4 class="card-title mb-0">Menu Activity Logs</h4>
+                <div class="d-flex gap-2">
+                    <form method="get" class="d-flex">
+                        <input type="text" name="search" class="form-control form-control-sm" 
+                               placeholder="Search logs..." value="{{ search_query }}">
+                        {% if selected_action %}<input type="hidden" name="action" value="{{ selected_action }}">{% endif %}
+                        {% if date_from %}<input type="hidden" name="date_from" value="{{ date_from }}">{% endif %}
+                        {% if date_to %}<input type="hidden" name="date_to" value="{{ date_to }}">{% endif %}
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Filters -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <form method="get">
+                            <select name="action" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="">All Actions</option>
+                                <option value="create" {% if selected_action == 'create' %}selected{% endif %}>Create</option>
+                                <option value="update" {% if selected_action == 'update' %}selected{% endif %}>Update</option>
+                                <option value="delete" {% if selected_action == 'delete' %}selected{% endif %}>Delete</option>
+                                <option value="reorder" {% if selected_action == 'reorder' %}selected{% endif %}>Reorder</option>
+                            </select>
+                            {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                            {% if date_from %}<input type="hidden" name="date_from" value="{{ date_from }}">{% endif %}
+                            {% if date_to %}<input type="hidden" name="date_to" value="{{ date_to }}">{% endif %}
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <form method="get">
+                            <input type="date" name="date_from" class="form-control form-control-sm" 
+                                   value="{{ date_from }}" onchange="this.form.submit()" placeholder="From date">
+                            {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                            {% if selected_action %}<input type="hidden" name="action" value="{{ selected_action }}">{% endif %}
+                            {% if date_to %}<input type="hidden" name="date_to" value="{{ date_to }}">{% endif %}
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <form method="get">
+                            <input type="date" name="date_to" class="form-control form-control-sm" 
+                                   value="{{ date_to }}" onchange="this.form.submit()" placeholder="To date">
+                            {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                            {% if selected_action %}<input type="hidden" name="action" value="{{ selected_action }}">{% endif %}
+                            {% if date_from %}<input type="hidden" name="date_from" value="{{ date_from }}">{% endif %}
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'menu_management:logs' %}" class="btn btn-sm btn-outline-secondary">Clear Filters</a>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Action</th>
+                                <th>Menu Item</th>
+                                <th>User</th>
+                                <th>IP Address</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr>
+                                <td>
+                                    <div>{{ log.timestamp|date:"M d, Y" }}</div>
+                                    <small class="text-muted">{{ log.timestamp|time:"H:i:s" }}</small>
+                                </td>
+                                <td>
+                                    {% if log.action == 'create' %}
+                                        <span class="badge bg-success">Created</span>
+                                    {% elif log.action == 'update' %}
+                                        <span class="badge bg-info">Updated</span>
+                                    {% elif log.action == 'delete' %}
+                                        <span class="badge bg-danger">Deleted</span>
+                                    {% elif log.action == 'reorder' %}
+                                        <span class="badge bg-warning">Reordered</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ log.action|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if log.menu_item %}
+                                        {{ log.menu_item.title }}
+                                        <small class="text-muted d-block">{{ log.menu_item.category.name }}</small>
+                                    {% else %}
+                                        <span class="text-muted">Deleted item</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if log.user %}
+                                        {{ log.user.get_full_name|default:log.user.username }}
+                                        <small class="text-muted d-block">{{ log.user.email }}</small>
+                                    {% else %}
+                                        <span class="text-muted">System</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if log.ip_address %}
+                                        <code>{{ log.ip_address }}</code>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if log.details %}
+                                        <button class="btn btn-sm btn-outline-info" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#detailsModal{{ log.id }}">
+                                            View Details
+                                        </button>
+                                        
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="detailsModal{{ log.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Log Details</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <pre class="bg-light p-3 rounded"><code>{{ log.details|pprint }}</code></pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    No logs found for the selected criteria.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if is_paginated %}
+                <nav aria-label="Log pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">&laquo; First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Previous</a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">Last &raquo;</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

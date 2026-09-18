@@ -40,7 +40,7 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
                 messages.success(request, f'Welcome back, {user.username}!')
-                next_url = request.GET.get('next', '/dashboard/')
+                next_url = request.POST.get('next') or request.GET.get('next') or '/dashboard/'
                 return redirect(next_url)
         else:
             messages.error(request, 'Invalid username or password.')

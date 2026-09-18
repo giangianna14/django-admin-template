@@ -1,0 +1,60 @@
+{% load menu_tags %}
+
+{% for category in categories %}
+    <li class="menu-title small text-uppercase">
+        <span class="menu-title-text">{{ category.name }}</span>
+    </li>
+    
+    {% for menu_item in category.filtered_items %}
+        {% is_menu_active menu_item as is_active %}
+        
+        <li class="menu-item {% if is_active or menu_item.filtered_children %}open{% endif %}">
+            {% if menu_item.menu_type == 'dropdown' and menu_item.filtered_children %}
+                <a
+                    href="javascript:void(0);"
+                    class="menu-link menu-toggle active"
+                >
+                    {% if settings.show_menu_icons %}
+                        {% menu_icon menu_item %}
+                    {% endif %}
+                    <span class="title">{{ menu_item.title }}</span>
+                    {% if menu_item.filtered_children %}
+                        <span class="count">{{ menu_item.filtered_children|length }}</span>
+                    {% endif %}
+                </a>
+
+                <ul class="menu-sub">
+                    {% for child in menu_item.filtered_children %}
+                        {% is_menu_active child as child_active %}
+                        <li class="menu-item{% if not forloop.last %} mb-0{% endif %}">
+                            <a
+                                href="{% get_menu_url child %}"
+                                class="menu-link {% if child_active %}active{% endif %}"
+                                {% if child.target != '_self' %}target="{{ child.target }}"{% endif %}
+                            >
+                                {{ child.title }}
+                                {% if settings.show_menu_badges %}
+                                    {% menu_badge child settings %}
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <a
+                    href="{% get_menu_url menu_item %}"
+                    class="menu-link {% if is_active %}active{% endif %}"
+                    {% if menu_item.target != '_self' %}target="{{ menu_item.target }}"{% endif %}
+                >
+                    {% if settings.show_menu_icons %}
+                        {% menu_icon menu_item %}
+                    {% endif %}
+                    <span class="title">{{ menu_item.title }}</span>
+                    {% if settings.show_menu_badges %}
+                        {% menu_badge menu_item settings %}
+                    {% endif %}
+                </a>
+            {% endif %}
+        </li>
+    {% endfor %}
+{% endfor %}
