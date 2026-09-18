@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     
-    # Third-party Authentication
+    # Third-party apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -48,20 +48,21 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.apple',
     
-    # Custom Apps
+    # Local apps
     'core',
     'authentication',
     'dashboard',
     'ecommerce',
-    'project_management',
     'communication',
     'ui_components',
-    'file_management',
     'lms',
     'events',
     'invoicing',
     'support',
     'user_management',
+    'project_management',
+    'file_management',
+    'menu_management',  # New menu management app
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Required for allauth
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -81,7 +82,11 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, "my_app", "templates")
+            os.path.join(BASE_DIR, "my_app", "templates"),
+            # Add app-specific template directories
+            os.path.join(BASE_DIR, "authentication", "templates"),
+            os.path.join(BASE_DIR, "dashboard", "templates"),
+            os.path.join(BASE_DIR, "menu_management", "templates"),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -90,7 +95,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
+                # Menu context processor
+                'menu_management.context_processors.menu_context',
             ],
         },
     },
@@ -155,20 +161,18 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Sites framework
+# Django Allauth Configuration
 SITE_ID = 1
 
-# Authentication settings
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# Django-allauth settings
+# Allauth settings
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-# Allauth settings (updated to new syntax)
-ACCOUNT_LOGIN_METHODS = {'email'}  # New syntax instead of ACCOUNT_AUTHENTICATION_METHOD
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # New syntax replacing multiple settings
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
@@ -181,50 +185,6 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
-# OAuth Provider Settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
-        'OAUTH_PKCE_ENABLED': True,
-    },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'name',
-            'name_format',
-            'picture',
-            'short_name',
-            'email',
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v18.0',
-    },
-    'apple': {
-        'APP': {
-            'client_id': 'your.apple.service.id',
-            'secret': 'your-apple-secret-key',
-            'key': 'your-apple-key-id',
-            'team': 'your-apple-team-id',
-        }
-    }
-}
-
 # Redirect URLs
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
@@ -235,18 +195,63 @@ LOGIN_URL = '/auth/login/'
 ACCOUNT_LOGIN_URL = '/auth/login/'
 ACCOUNT_SIGNUP_URL = '/auth/register/'
 
-# Email Backend (for development)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Social Auth Providers
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v13.0',
+    },
+    'apple': {
+        'APP': {
+            'client_id': 'your.apple.app.id',
+            'secret': 'your-apple-secret',
+            'key': 'your-apple-key',
+        }
+    }
+}
 
-# For production, use SMTP:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your-email@gmail.com'
-# EMAIL_HOST_PASSWORD = 'your-app-password'
+# Menu Management Settings
+MENU_CACHE_TIMEOUT = 3600  # Cache menu for 1 hour
+MENU_MAX_DEPTH = 3  # Maximum menu nesting depth
 
-# Security settings
-SECURE_SSL_REDIRECT = False  # Set to True in production with HTTPS
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+# Media files (for menu logo uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Messages framework tags for Bootstrap
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}

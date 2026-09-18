@@ -1,0 +1,235 @@
+{% extends 'menu_management/base.html' %}
+
+{% block title %}
+    {% if form.instance.pk %}Edit Menu Item{% else %}Add Menu Item{% endif %}
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    {% if form.instance.pk %}Edit Menu Item{% else %}Add Menu Item{% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                                {{ form.title }}
+                                {% if form.title.errors %}
+                                    <div class="text-danger">{{ form.title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.icon.id_for_label }}" class="form-label">Icon</label>
+                                {{ form.icon }}
+                                {% if form.icon.errors %}
+                                    <div class="text-danger">{{ form.icon.errors.0 }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Use Material Symbols icon names (e.g., dashboard, settings, person)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="text-danger">{{ form.category.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.parent.id_for_label }}" class="form-label">Parent Menu</label>
+                                {{ form.parent }}
+                                {% if form.parent.errors %}
+                                    <div class="text-danger">{{ form.parent.errors.0 }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Select parent menu to create a submenu item
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="{{ form.menu_type.id_for_label }}" class="form-label">Type</label>
+                                {{ form.menu_type }}
+                                {% if form.menu_type.errors %}
+                                    <div class="text-danger">{{ form.menu_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="{{ form.order.id_for_label }}" class="form-label">Order</label>
+                                {{ form.order }}
+                                {% if form.order.errors %}
+                                    <div class="text-danger">{{ form.order.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="{{ form.target.id_for_label }}" class="form-label">Target</label>
+                                {{ form.target }}
+                                {% if form.target.errors %}
+                                    <div class="text-danger">{{ form.target.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.url_name.id_for_label }}" class="form-label">URL Name</label>
+                        {{ form.url_name }}
+                        {% if form.url_name.errors %}
+                            <div class="text-danger">{{ form.url_name.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Django URL name or full URL. Example: 'home', 'user:profile', '/custom-url/'
+                        </small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.badge_text.id_for_label }}" class="form-label">Badge Text</label>
+                                {{ form.badge_text }}
+                                {% if form.badge_text.errors %}
+                                    <div class="text-danger">{{ form.badge_text.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.badge_color.id_for_label }}" class="form-label">Badge Color</label>
+                                {{ form.badge_color }}
+                                {% if form.badge_color.errors %}
+                                    <div class="text-danger">{{ form.badge_color.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.css_class.id_for_label }}" class="form-label">CSS Classes</label>
+                        {{ form.css_class }}
+                        {% if form.css_class.errors %}
+                            <div class="text-danger">{{ form.css_class.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Additional CSS classes for the menu item
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.required_permissions.id_for_label }}" class="form-label">Required Permissions</label>
+                        {{ form.required_permissions }}
+                        {% if form.required_permissions.errors %}
+                            <div class="text-danger">{{ form.required_permissions.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Hold Ctrl/Cmd to select multiple permissions
+                        </small>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                            Active
+                        </label>
+                        {% if form.is_active.errors %}
+                            <div class="text-danger">{{ form.is_active.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'menu_management:menu_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            {% if form.instance.pk %}Update{% else %}Create{% endif %} Menu Item
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <strong>URL Name:</strong> Use Django URL names for internal links
+                    </li>
+                    <li class="mb-2">
+                        <strong>Parent Menu:</strong> Create submenus by selecting a parent
+                    </li>
+                    <li class="mb-2">
+                        <strong>Order:</strong> Lower numbers appear first
+                    </li>
+                    <li class="mb-2">
+                        <strong>Permissions:</strong> Users need ALL selected permissions to see the menu
+                    </li>
+                    <li class="mb-2">
+                        <strong>Icons:</strong> Visit <a href="https://fonts.google.com/icons" target="_blank">Google Icons</a> for available icons
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-fill order field
+    const orderField = document.getElementById('{{ form.order.id_for_label }}');
+    if (orderField && !orderField.value) {
+        orderField.value = 100;
+    }
+    
+    // Menu type change handler
+    const menuTypeField = document.getElementById('{{ form.menu_type.id_for_label }}');
+    const urlField = document.getElementById('{{ form.url_name.id_for_label }}');
+    const parentField = document.getElementById('{{ form.parent.id_for_label }}');
+    
+    function handleMenuTypeChange() {
+        const selectedType = menuTypeField.value;
+        if (selectedType === 'separator') {
+            urlField.value = '';
+            urlField.disabled = true;
+            parentField.value = '';
+            parentField.disabled = true;
+        } else {
+            urlField.disabled = false;
+            parentField.disabled = false;
+        }
+    }
+    
+    if (menuTypeField) {
+        menuTypeField.addEventListener('change', handleMenuTypeChange);
+        handleMenuTypeChange(); // Initial call
+    }
+});
+</script>
+{% endblock %}

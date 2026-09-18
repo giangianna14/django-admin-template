@@ -93,8 +93,11 @@
 						</div>
 						
 						<!-- Regular Login Form -->
-						<form method="post" action="{% url 'authentication:login' %}">
+						<form method="post" action="{% url 'authentication:login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
 							{% csrf_token %}
+							{% if request.GET.next %}
+								<input type="hidden" name="next" value="{{ request.GET.next }}" />
+							{% endif %}
 							
 							<!-- Display Messages -->
 							{% if messages %}

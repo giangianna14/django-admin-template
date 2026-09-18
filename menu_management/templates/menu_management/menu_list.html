@@ -1,0 +1,122 @@
+{% extends 'menu_management/base.html' %}
+
+{% block title %}Menu Items{% endblock %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h4 class="card-title mb-0">Menu Items</h4>
+                <a href="{% url 'menu_management:menu_create' %}" class="btn btn-primary">
+                    <i class="material-symbols-outlined me-2">add</i>
+                    Add Menu Item
+                </a>
+            </div>
+            <div class="card-body">
+                <!-- Filters -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <form method="get" class="d-flex">
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Search menus..." value="{{ search_query }}">
+                            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+                            {% if selected_status %}<input type="hidden" name="status" value="{{ selected_status }}">{% endif %}
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <form method="get">
+                            <select name="category" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                            {% if selected_status %}<input type="hidden" name="status" value="{{ selected_status }}">{% endif %}
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <form method="get">
+                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Status</option>
+                                <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
+                                <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>Inactive</option>
+                            </select>
+                            {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>URL</th>
+                                <th>Order</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for menu_item in menu_items %}
+                            <tr>
+                                <td>
+                                    {% if menu_item.parent %}
+                                        <span class="text-muted ms-3">└─</span>
+                                    {% endif %}
+                                    {{ menu_item.title }}
+                                    {% if menu_item.badge_text %}
+                                        <span class="badge bg-warning ms-1">{{ menu_item.badge_text }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ menu_item.category.name }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ menu_item.get_menu_type_display }}</span>
+                                </td>
+                                <td>
+                                    {% if menu_item.url_name %}
+                                        <small class="text-muted">{{ menu_item.url_name|truncatechars:30 }}</small>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ menu_item.order }}</td>
+                                <td>
+                                    {% if menu_item.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'menu_management:menu_edit' menu_item.pk %}" 
+                                           class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <a href="{% url 'menu_management:menu_delete' menu_item.pk %}" 
+                                           class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    No menu items found. 
+                                    <a href="{% url 'menu_management:menu_create' %}">Create one now</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
