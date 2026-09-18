@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode, url_has_allowed_host_and_scheme
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from allauth.socialaccount.models import SocialAccount
@@ -40,7 +40,9 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
                 messages.success(request, f'Welcome back, {user.username}!')
-                next_url = request.POST.get('next') or request.GET.get('next') or '/dashboard/'
+                next_url = request.POST.get('next') or request.GET.get('next')
+                if not next_url or not url_has_allowed_host_and_scheme(url=next_url, allowed_hosts={request.get_host()}):
+                    next_url = '/dashboard/'
                 return redirect(next_url)
         else:
             messages.error(request, 'Invalid username or password.')
